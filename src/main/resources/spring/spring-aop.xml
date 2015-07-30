@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/aop 
+   http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd
+	">
+	<!-- 声明切面bean -->
+	<bean id="logAspect" class="spring.aspect.LogAspect" />
+	<aop:config>
+		<aop:aspect ref="logAspect">
+			<!-- 减少冗余，提出一个切点表达式 -->
+			<aop:pointcut expression="within(spring.dao..*)" id="daoPointcut" />
+			<!-- 前置通知 -->
+			<aop:before pointcut-ref="daoPointcut" method="beforeLog" />
+			<!-- 后置通知（无论成功或失败） -->
+			<aop:after pointcut-ref="daoPointcut" method="afterLog" />
+			<!-- 后置通知（返回成功） -->
+			<aop:after-returning pointcut-ref="daoPointcut"
+				method="afterReturnLog" />
+			<!-- 后置通知（抛出异常） -->
+			<aop:after-throwing pointcut-ref="daoPointcut"
+				method="afterThrowingLog" />
+			<!-- 环绕通知 -->
+			<aop:around pointcut-ref="daoPointcut" method="aroundLog" />
+			<!-- 为对象添加方法 -->
+			<aop:declare-parents types-matching="spring.service..*"
+				implement-interface="spring.log.ILog" default-impl="spring.log.impl.LogImpl" />
+		</aop:aspect>
+	</aop:config>
+	
+	<bean id="userServiceInterceptor" class="spring.aop.interceptor.UserServiceInterceptor"/>
+	
+	<!-- 拦截机制(拦截多个bean) -->
+	<bean id="beanNameAutoProxyCreator" class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+		<!-- 要拦截的bean -->
+		<property name="beanNames">
+<!-- 		<property name="beanNames">   -->
+<!--             <value>target*,*Task,*service</value>包含所有带Service的Bean   -->
+<!--         </property>    -->
+			<list>
+				<value>userService</value>
+			</list>
+		</property>
+		<!-- 拦截后操作的bean -->
+		<property name="interceptorNames">
+			<list>
+				<value>userServiceInterceptor</value>
+			</list>
+		</property>
+	</bean>
+	
+<!-- 	<bean id="proxyFactoryBean" class="org.springframework.aop.framework.ProxyFactoryBean"> -->
+<!-- 		<property name="proxyInterfaces"></property> -->
+<!-- 		<property name=""></property> -->
+	
+<!-- 	</bean> -->
+
+</beans>

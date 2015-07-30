@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/aop 
+    http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd
+	">
+	
+	<!-- 扫描加载properties文件 -->
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:db.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	
+	<!-- 引入数据源配置文件 -->
+	<import resource="spring-db.xml"/>
+	
+	<!-- 引入dao文件 -->
+	<import resource="spring-dao.xml" />
+	
+	<!-- 引入service文件 -->
+	<import resource="spring-service.xml"/>
+	
+	<!-- 引入aop文件 -->
+	<import resource="spring-aop.xml"/>
+	
+	<!-- spring 容器上下文控制器 -->
+	<bean id="applicationContextUtil" class="example.core.bean.ApplicationContextUtil" />
+</beans>

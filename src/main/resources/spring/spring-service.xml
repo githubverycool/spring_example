@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/aop 
+    http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd
+	">
+
+	<!-- 声明基础service类,并注入事务模板 -->
+	<bean id="baseService" abstract="true" class="spring.service.impl.BaseServiceImpl">
+		<property name="transactionTemplate" ref="transactionTemplate"/>
+	</bean>
+	
+	<!--声明用户service类  -->
+	<bean id="userService" parent="baseService" class="spring.service.impl.UserServiceImpl">
+		<property name="userDao" ref="userDao"/>
+	</bean>
+
+
+</beans>

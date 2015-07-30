@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/aop 
+    http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx.xsd
+	">
+
+	<!-- 声明JdbcDaoSupport -->
+	<bean abstract="true" id="jdbcDaoSupport" class="spring.support.JdbcDaoSupport">
+		<!-- 注入jdbcTemplate -->
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+		<!-- 如果不注入jdbcTemplate,可以注入数据源也会自动创建 jdbcTemplate -->
+		<!-- <property name="dataSource" ref="dataSource" /> -->
+	</bean>
+
+	<bean id="userDao" parent="jdbcDaoSupport" class="spring.dao.impl.UserDaoImpl">
+		<property name="mapped">
+			<bean class="spring.entry.User"/>
+		</property>
+		<property name="sql">
+			<value>
+<!-- 			需要解决注入 非查询语句的执行问题 -->
+<!-- 				<![CDATA[ INSERT INTO `spring_example`.`user` (`name`) VALUES ('李四') ]]> -->
+				<![CDATA[ select * from user ]]>
+			</value>
+		</property>
+	</bean>
+
+
+
+</beans>
